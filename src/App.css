@@ -1,0 +1,44 @@
+#root {
+  width: 100vw;
+  height: 100vh;
+  /* text-align: center; */
+  color: black;
+}
+.background {
+  background-color: gray;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.form-container {
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: white;
+  color: black;
+  height: 90%;
+  width: 50%;
+}
+.form {
+  padding: 1em 5em;
+  width: fit-content;
+  display: flex;
+  gap: 1em;
+  flex-direction: column;
+}
+
+.text-field {
+  display: flex;
+  flex-direction: column;
+}
+input[type='text'],
+input[type='tel'] {
+  width: 100%;
+  padding: 0.7em;
+  box-sizing: border-box;
+  background: white;
+  color: black;
+}
