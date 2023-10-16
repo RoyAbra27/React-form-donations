@@ -1,82 +1,252 @@
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import AddItemModal from './components/addItemModal/addItemModal';
 import './App.css';
 
+const items = [
+  {
+    name: 'חליפת סערה',
+    product_number: 1289515528,
+    quantity: 1,
+  },
+  {
+    name: 'קסדה מוגנת',
+    product_number: 725048237,
+    quantity: 1,
+  },
+  {
+    name: 'גופיה ירוקה',
+    product_number: 389612341,
+    quantity: 1,
+  },
+  {
+    name: 'אפוד קרמי',
+    product_number: 974512369,
+    quantity: 1,
+  },
+  {
+    name: 'תיק גב',
+    product_number: 652134789,
+    quantity: 1,
+  },
+  {
+    name: 'מימייה',
+    product_number: 485237691,
+    quantity: 1,
+  },
+];
+
 export default function App() {
+  const [selectedItems, setSelectedItems] = useState([]);
+  const [availableItems, setAvailableItems] = useState([...items]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   const {
     register,
     handleSubmit,
+    watch,
+    setValue,
     formState: { errors },
-  } = useForm();
-  const onSubmit = (data) => console.log(data);
-  console.log(errors);
+  } = useForm({
+    mode: 'onBlur',
+    defaultValues: {
+      name: '',
+      phone: '',
+      unit: '',
+      job: '',
+      email: '',
+      location: '',
+      tenant: '',
+      subitems: [],
+    },
+  });
+
+  const onSubmit = (data) => {
+    const params = new URLSearchParams(window.location.pathname);
+    params.get('tenant');
+    data.subitems = selectedItems;
+    data.tenant = console.log(data);
+  };
+
+  useEffect(() => {
+    if (selectedItems.length > 0) {
+      setValue('subitems', selectedItems);
+    }
+  }, [selectedItems]);
+
+  if (errors.length > 0) {
+    console.log(errors);
+  }
+  const onAddItem = (e) => {
+    const item = items.find((i) => i.name === e.target.value);
+    setAvailableItems(availableItems.filter((i) => i.name !== e.target.value));
+    setSelectedItems((currnet) => [...currnet, item]);
+  };
 
   return (
     <div className='background'>
       <div className='form-container'>
+        <div className='header'>
+          <img src='/Logo.png' alt='LOGO' className='logo' />
+          <div className='title'>בקשה לתרומה לציוד לחימה</div>
+          <div className='description'>
+            טופס זה מיועד למשרתים פעילים בצה״ל סדיר ,מילואים וקבע. אם הינך אדם
+            פרטי וברצונך לסייע לכח לוחם בהשלמת ציוד , אנא הפנה טופס זה לקצין
+            האמל״ח או לגורם רלוונטי ביחידה. נא לרכז את כל המוצרים בטופס אחד
+          </div>
+        </div>
         <form className='form' onSubmit={handleSubmit(onSubmit)}>
-          <div className='text-field'>
-            <label>שם מלא</label>
+          <div className='field-container'>
+            <div className='field-title'>
+              <label>שם מלא</label>
+              <div className='required'>*</div>
+              <div className='error-message'>{errors.name?.message}</div>
+            </div>
             <input
+              className='text-field'
               type='text'
               placeholder='שם מלא'
-              {...register('name', { required: true })}
+              {...register('name', { required: 'זהו שדה חובה' })}
             />
           </div>
-          <div className='text-field'>
-            <label>מספר טלפון</label>
+          <div className='field-container'>
+            <div className='field-title'>
+              <label>מספר טלפון</label>
+              <div className='required'>*</div>
+              <div className='error-message'>{errors.phone?.message}</div>
+            </div>
             <input
+              className='text-field'
               type='tel'
               placeholder='מספר טלפון'
               {...register('phone', {
-                required: true,
-                minLength: 6,
-                maxLength: 12,
+                pattern: {
+                  message: 'מספר טלפון זה אינו תקין',
+                  value:
+                    /^[+]?[(]?[0-9]{3}[)]?[-\s.]?[0-9]{3}[-\s.]?[0-9]{4,6}$/,
+                },
+                required: 'זהו שדה חובה',
+                minLength: {
+                  value: 6,
+                  message: 'מספר טלפון זה אינו תקין',
+                },
+                maxLength: {
+                  value: 12,
+                  message: 'מספר טלפון זה אינו תקין',
+                },
               })}
             />
           </div>
-          <div className='text-field'>
-            <label>יחידה</label>
-
+          <div className='field-container'>
+            <div className='field-title'>
+              <label>כתובת מייל</label>
+              <div className='required'>*</div>
+              <div className='error-message'>{errors.email?.message}</div>
+            </div>
             <input
+              className='text-field'
+              type='email'
+              placeholder='כתובת מייל'
+              {...register('email', {
+                required: 'זהו שדה חובה',
+                pattern: {
+                  value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                  message: 'כתובת מייל אינה תקינה',
+                },
+              })}
+            />
+          </div>
+          <div className='field-container'>
+            <div className='field-title'>
+              <label>יחידה</label>
+              <div className='required'>*</div>
+              <div className='error-message'>{errors.unit?.message}</div>
+            </div>
+            <input
+              className='text-field'
               type='text'
               placeholder='יחידה'
-              {...register('unit', { required: true })}
+              {...register('unit', { required: 'זהו שדה חובה' })}
             />
           </div>
-          <div className='text-field'>
-            <label>תפקיד</label>
+          <div className='field-container'>
+            <div className='field-title'>
+              <label>תפקיד</label>
+              <div className='required'>*</div>
+              <div className='error-message'>{errors.job?.message}</div>
+            </div>
             <input
+              className='text-field'
               type='text'
               placeholder='תפקיד'
-              {...register('job', { required: true })}
+              {...register('job', { required: 'זהו שדה חובה' })}
             />
           </div>
-          <div className='text-field'>
-            <input
-              {...register('location', { required: true })}
-              type='radio'
-              value='דרום'
-            />
+          <div className='field-container'>
+            <div className='field-title'>
+              <label>מיקום</label>
+              <div className='required'>*</div>
+              <div className='error-message'>{errors.location?.message}</div>
+            </div>
+            <select
+              className='select-field'
+              defaultValue={watch('location')}
+              {...register('location', { required: 'זהו שדה חובה' })}
+            >
+              <option disabled={true} value=''>
+                בחר מיקום
+              </option>
 
-            <input
-              {...register('location', { required: true })}
-              type='radio'
-              value='צפון'
+              <option value='צפון'>צפון</option>
+              <option value='דרום'>דרום</option>
+              <option value='אחר'>אחר</option>
+            </select>
+          </div>
+
+          <div>בחירת מוצרים:</div>
+          <div className='items-container'>
+            {selectedItems.map((item) => (
+              <div key={item.product_number} className='item'>
+                <div>{item.name}</div>
+                <div className='options-container'>
+                  <div className='quantity'>- 1 +</div>
+                  <div className='option-buttons'> X E</div>
+                </div>
+              </div>
+            ))}
+            <div className='add-button-container'>
+              <button
+                type='button'
+                onClick={() => setIsModalOpen(!isModalOpen)}
+              >
+                הוסף פריט חדש +
+              </button>
+            </div>
+          </div>
+          <div className='field-container'>
+            <textarea
+              className='text-field'
+              placeholder='הערות'
+              cols='30'
+              rows='5'
+              {...register('note', {})}
             />
           </div>
-          <select {...register('subitems', { required: true })}>
-            <option value='חליפת סערה'>חליפת סערה</option>
-            <option value='נעלי הרים'>נעלי הרים</option>
-          </select>
-          <textarea
-            placeholder='הערות'
-            cols='30'
-            rows='5'
-            {...register('note', {})}
-          />
-          <input type='submit' />
+
+          <button className='submit-button' type='submit'>
+            שלח בקשה
+          </button>
         </form>
       </div>
+      {isModalOpen ? (
+        <AddItemModal
+          isModalOpen={isModalOpen}
+          onRequestClose={() => setIsModalOpen(false)}
+          selectedItems={selectedItems}
+          onAddItem={onAddItem}
+          availableItems={availableItems}
+        />
+      ) : null}
     </div>
   );
 }
