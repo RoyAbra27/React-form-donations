@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import AddItemModal from './components/addItemModal/addItemModal';
+import { MinusCircle, PlusCircle } from 'react-feather';
 import './App.css';
 
 const items = [
@@ -77,10 +78,11 @@ export default function App() {
   if (errors.length > 0) {
     console.log(errors);
   }
-  const onAddItem = (e) => {
-    const item = items.find((i) => i.name === e.target.value);
-    setAvailableItems(availableItems.filter((i) => i.name !== e.target.value));
-    setSelectedItems((currnet) => [...currnet, item]);
+  const onAddItem = (newItem) => {
+    setAvailableItems(
+      availableItems.filter((i) => i.product_number !== newItem.product_number)
+    );
+    setSelectedItems((currnet) => [...currnet, newItem]);
   };
 
   return (
@@ -209,7 +211,11 @@ export default function App() {
               <div key={item.product_number} className='item'>
                 <div>{item.name}</div>
                 <div className='options-container'>
-                  <div className='quantity'>- 1 +</div>
+                  <div className='quantity'>
+                    <PlusCircle className='icon' />
+                    {item.quantity}
+                    <MinusCircle className='icon' />
+                  </div>
                   <div className='option-buttons'> X E</div>
                 </div>
               </div>

@@ -6,7 +6,6 @@
   border: 1px solid #00b7c3;
   background-color: white;
   border-radius: 16px;
-  height: auto;
   overflow: hidden;
   height: 50%;
   width: 50%;
@@ -17,8 +16,9 @@
     text-align: center;
     align-items: center;
     gap: 1em;
+    margin: 1em;
     width: auto;
-    padding: 1em;
+    height: 90%;
     .title {
       font-weight: 500;
       font-size: 1.3em;
@@ -26,27 +26,44 @@
       border-bottom: 1px solid #00b7c3;
       padding-bottom: 0.5em;
     }
-
-    .item-box {
+    .modal-form {
+      width: 100%;
+      height: 100%;
       display: flex;
-      flex-direction: row;
-      gap: 3em;
-    }
-    .submit-button {
-      font-family: inherit;
-      align-self: center;
-      background: #00b7c3;
-      color: white;
-      border: none;
-      padding: 0.8em;
-      border-radius: 18px;
-      width: 50%;
-      font-size: 1em;
+      align-items: center;
+      flex-direction: column;
+      justify-content: space-between;
+      .item-box {
+        display: flex;
+        flex-direction: row;
+        gap: 3em;
+        font-size: 1.2em;
+
+        .quantity {
+          display: flex;
+          align-items: center;
+          gap: 0.2em;
+          .icon {
+            width: 1em;
+          }
+        }
+      }
+      .submit-button {
+        font-family: inherit;
+        align-self: center;
+        background: #00b7c3;
+        color: white;
+        border: none;
+        padding: 0.8em;
+        border-radius: 18px;
+        width: 50%;
+        font-size: 1em;
+      }
     }
   }
 
   .select-field {
-    width: 100%;
+    width: 70%;
     border: 1px solid #00b7c3;
     border-radius: 18px;
     padding: 0.7em;
