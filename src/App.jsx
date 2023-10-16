@@ -94,7 +94,7 @@ export default function App() {
           <div className='description'>
             טופס זה מיועד למשרתים פעילים בצה״ל סדיר ,מילואים וקבע. אם הינך אדם
             פרטי וברצונך לסייע לכח לוחם בהשלמת ציוד , אנא הפנה טופס זה לקצין
-            האמל״ח או לגורם רלוונטי ביחידה. נא לרכז את כל המוצרים בטופס אחד
+            האמל״ח או לגורם רלוונטי ביחידה. נא לרכז את כל הפריטים בטופס אחד
           </div>
         </div>
         <form className='form' onSubmit={handleSubmit(onSubmit)}>
@@ -205,16 +205,14 @@ export default function App() {
             </select>
           </div>
 
-          <div>בחירת מוצרים:</div>
+          <div>בחירת פריטים:</div>
           <div className='items-container'>
             {selectedItems.map((item) => (
               <div key={item.product_number} className='item'>
                 <div>{item.name}</div>
                 <div className='options-container'>
                   <div className='quantity'>
-                    <PlusCircle className='icon' />
                     {item.quantity}
-                    <MinusCircle className='icon' />
                   </div>
                   <div className='option-buttons'> X E</div>
                 </div>
@@ -225,7 +223,7 @@ export default function App() {
                 type='button'
                 onClick={() => setIsModalOpen(!isModalOpen)}
               >
-                הוסף פריט חדש +
+                +
               </button>
             </div>
           </div>
