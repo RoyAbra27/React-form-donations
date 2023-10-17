@@ -18,17 +18,13 @@ const AddItemModal = ({
     setSelectedItem(item);
   };
 
-  const addQuantity = () => {
-    setSelectedItem({ ...selectedItem, quantity: selectedItem.quantity + 1 });
-  };
-
-  const removeQuantity = () => {
-    setSelectedItem({ ...selectedItem, quantity: selectedItem.quantity - 1 });
-  };
-
   const handleConfirm = () => {
     onAddItem(selectedItem);
     onRequestClose();
+  };
+
+  const updateQuantity = (quanity) => {
+    setSelectedItem({ ...selectedItem, quantity: quanity });
   };
 
   return (
@@ -40,7 +36,7 @@ const AddItemModal = ({
       className='modal-container'
     >
       <div className='modal-content'>
-        <div className='title'>בחירת פריט</div>
+        <div className='title'>הוספת/עדכון פריט</div>
         <div className='modal-form'>
           <select
             required={selectedItems.length === 0}
@@ -58,16 +54,11 @@ const AddItemModal = ({
             ))}
           </select>
           {selectedItem ? (
-            <div className='item-box'>
-              <div className='name'>{selectedItem.name}</div>
-              <div className='options-container'>
-                <div className='quantity'>
-                  <PlusCircle onClick={addQuantity} className='icon' />
-                  {selectedItem.quantity}
-                  <MinusCircle onClick={removeQuantity} className='icon' />
-                </div>
-              </div>
-            </div>
+            <input 
+              type='number' 
+              value={selectedItem.quantity} 
+              onChange={(e) => updateQuantity(e.target.value)} 
+              className='quantity-input' />
           ) : null}
           <button
             onClick={handleConfirm}
