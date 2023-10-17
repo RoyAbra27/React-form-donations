@@ -33,20 +33,15 @@
       align-items: center;
       flex-direction: column;
       justify-content: space-between;
-      .item-box {
-        display: flex;
-        flex-direction: row;
-        gap: 3em;
-        font-size: 1.2em;
 
-        .quantity {
-          display: flex;
-          align-items: center;
-          gap: 0.2em;
-          .icon {
-            width: 1em;
-          }
-        }
+      .quantity-input {
+        // }
+        border: 1px solid #00b7c3;
+        border-radius: 18px;
+        padding: 0.5em;
+        font-size: 1em;
+        font-weight: 600;
+        text-align: center;
       }
       .submit-button {
         font-family: inherit;
