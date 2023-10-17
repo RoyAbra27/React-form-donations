@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import AddItemModal from './components/addItemModal/addItemModal';
-import { MinusCircle, PlusCircle } from 'react-feather';
+import { Edit, Plus, X } from 'react-feather';
 import './App.css';
 
 const items = [
@@ -41,6 +41,7 @@ export default function App() {
   const [selectedItems, setSelectedItems] = useState([]);
   const [availableItems, setAvailableItems] = useState([...items]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [itemToEdit, setItemToEdit] = useState(null);
 
   const {
     register,
@@ -64,9 +65,19 @@ export default function App() {
 
   const onSubmit = (data) => {
     const params = new URLSearchParams(window.location.pathname);
-    params.get('tenant');
     data.subitems = selectedItems;
-    data.tenant = console.log(data);
+    data.tenant = params.get('tenant');
+
+    console.log(data);
+  };
+
+  const toggleModal = (editItem) => {
+    if (editItem) {
+      setItemToEdit(editItem);
+    } else {
+      setItemToEdit(null);
+    }
+    setIsModalOpen(true);
   };
 
   useEffect(() => {
@@ -78,11 +89,39 @@ export default function App() {
   if (errors.length > 0) {
     console.log(errors);
   }
+
   const onAddItem = (newItem) => {
     setAvailableItems(
       availableItems.filter((i) => i.product_number !== newItem.product_number)
     );
     setSelectedItems((currnet) => [...currnet, newItem]);
+  };
+
+  const onEditItem = (updatedItem) => {
+    setSelectedItems(
+      selectedItems.map((item) =>
+        item.product_number === itemToEdit.product_number ? updatedItem : item
+      )
+    );
+
+    setAvailableItems(
+      availableItems.filter(
+        (i) => i.product_number !== updatedItem.product_number
+      )
+    );
+    if (itemToEdit.product_number !== updatedItem.product_number) {
+      setAvailableItems((currnet) => [...currnet, itemToEdit]);
+    }
+
+    setItemToEdit(null);
+  };
+
+  const onRemoveItem = (newItem) => {
+    setItemToEdit(null);
+    setSelectedItems(
+      selectedItems.filter((i) => i.product_number !== newItem.product_number)
+    );
+    setAvailableItems((currnet) => [...currnet, newItem]);
   };
 
   return (
@@ -211,19 +250,24 @@ export default function App() {
               <div key={item.product_number} className='item'>
                 <div>{item.name}</div>
                 <div className='options-container'>
-                  <div className='quantity'>
-                    {item.quantity}
+                  <div className='quantity'>{item.quantity}</div>
+                  <div className='option-buttons'>
+                    <Edit
+                      className='edit-btn'
+                      onClick={() => toggleModal(item)}
+                    />
+
+                    <X
+                      className='remove-btn'
+                      onClick={() => onRemoveItem(item)}
+                    />
                   </div>
-                  <div className='option-buttons'> X E</div>
                 </div>
               </div>
             ))}
             <div className='add-button-container'>
-              <button
-                type='button'
-                onClick={() => setIsModalOpen(!isModalOpen)}
-              >
-                +
+              <button type='button' onClick={() => setIsModalOpen(true)}>
+                <Plus />
               </button>
             </div>
           </div>
@@ -242,15 +286,18 @@ export default function App() {
           </button>
         </form>
       </div>
-      {isModalOpen ? (
+
+      {isModalOpen && (
         <AddItemModal
           isModalOpen={isModalOpen}
           onRequestClose={() => setIsModalOpen(false)}
           selectedItems={selectedItems}
           onAddItem={onAddItem}
+          onEditItem={onEditItem}
           availableItems={availableItems}
+          itemToEdit={itemToEdit}
         />
-      ) : null}
+      )}
     </div>
   );
 }

@@ -115,11 +115,34 @@
         flex-direction: row;
         justify-content: space-between;
         border-bottom: 1px solid #00b7c3;
+        font-weight: 500;
 
         .options-container {
           display: flex;
-          gap: 1em;
+          gap: 0.7em;
           flex-direction: row;
+          align-items: center;
+
+          .quantity {
+            font-size: 1.2em;
+          }
+
+          .option-buttons {
+            align-items: center;
+            display: flex;
+            gap: 0.5em;
+
+            .edit-btn {
+              height: 1.2em;
+              align-items: center;
+              cursor: pointer;
+            }
+            .remove-btn {
+              cursor: pointer;
+              height: 1.2em;
+              color: red;
+            }
+          }
         }
       }
       .add-button-container {
@@ -133,7 +156,6 @@
           padding: 0 0.5em;
           border-radius: 18px;
           width: 50%;
-          font-size: 1em;
         }
       }
     }

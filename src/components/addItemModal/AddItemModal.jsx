@@ -3,23 +3,26 @@
 import Modal from 'react-modal';
 import { useState } from 'react';
 import './add-item-modal.css';
-import { PlusCircle, MinusCircle } from 'react-feather';
 
 const AddItemModal = ({
   selectedItems,
   onAddItem,
+  onEditItem,
   availableItems,
   isModalOpen,
   onRequestClose,
+  itemToEdit,
 }) => {
-  const [selectedItem, setSelectedItem] = useState(null);
+  const [selectedItem, setSelectedItem] = useState(
+    itemToEdit ? itemToEdit : null
+  );
   const handleOnChange = (itemName) => {
     const item = availableItems.find((i) => i.name === itemName);
     setSelectedItem(item);
   };
 
   const handleConfirm = () => {
-    onAddItem(selectedItem);
+    itemToEdit ? onEditItem(selectedItem) : onAddItem(selectedItem);
     onRequestClose();
   };
 
@@ -47,6 +50,9 @@ const AddItemModal = ({
             <option disabled={true} value=''>
               בחר פריט
             </option>
+            {itemToEdit ? (
+              <option value={itemToEdit.name}>{itemToEdit.name}</option>
+            ) : null}
             {availableItems.map((item) => (
               <option key={item.product_number} value={item.name}>
                 {item.name}
@@ -54,18 +60,21 @@ const AddItemModal = ({
             ))}
           </select>
           {selectedItem ? (
-            <input 
-              type='number' 
-              value={selectedItem.quantity} 
-              onChange={(e) => updateQuantity(e.target.value)} 
-              className='quantity-input' />
+            <input
+              type='number'
+              min={1}
+              max={99}
+              value={selectedItem.quantity}
+              onChange={(e) => updateQuantity(e.target.value)}
+              className='quantity-input'
+            />
           ) : null}
           <button
             onClick={handleConfirm}
             disabled={!selectedItem}
             className='submit-button'
           >
-            הוסף
+            {itemToEdit ? 'עדכן' : 'הוסף'}
           </button>
         </div>
       </div>
