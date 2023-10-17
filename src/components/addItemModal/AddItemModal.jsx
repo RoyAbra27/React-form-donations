@@ -18,7 +18,7 @@ const AddItemModal = ({
   );
   const handleOnChange = (itemName) => {
     const item = availableItems.find((i) => i.name === itemName);
-    setSelectedItem(item);
+    setSelectedItem({ ...item, quantity: 1 });
   };
 
   const handleConfirm = () => {
@@ -64,7 +64,7 @@ const AddItemModal = ({
               type='number'
               min={1}
               max={99}
-              value={selectedItem.quantity}
+              value={selectedItem.quantity || 1}
               onChange={(e) => updateQuantity(e.target.value)}
               className='quantity-input'
             />
