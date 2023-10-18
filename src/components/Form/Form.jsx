@@ -114,7 +114,6 @@ const Form = ({ updateForm }) => {
 
   return (
     <div className='background'>
-      {/* <Loader></Loader> */}
       <div className='form-container'>
         <div className='header'>
           <img src='/Logo.png' alt='LOGO' className='logo' />
