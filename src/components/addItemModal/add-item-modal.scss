@@ -7,9 +7,9 @@
   background-color: white;
   border-radius: 16px;
   overflow: hidden;
-  height: 25%;
-  width: 40%;
-
+  width: 30%;
+  min-height: fit-content;
+  min-width: fit-content;
   .modal-content {
     display: flex;
     flex-direction: column;
@@ -32,6 +32,7 @@
       display: flex;
       align-items: center;
       flex-direction: column;
+      gap: 1em;
       justify-content: space-between;
       .fields {
         justify-content: center;
@@ -88,6 +89,7 @@
 
 @media (max-width: 768px) {
   .modal-container {
-    min-width: 70%;
+    min-width: 80%;
+    min-height: 30%;
   }
 }
