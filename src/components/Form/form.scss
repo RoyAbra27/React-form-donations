@@ -1,0 +1,187 @@
+.background {
+  background-color: gainsboro;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  height: auto;
+  overflow: hidden;
+
+  .form-container {
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: white;
+    margin: 2em;
+    width: 45%;
+
+    .header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 1em;
+      padding: 1em;
+      .logo {
+        width: 100%;
+      }
+      .title {
+        font-size: 1.3em;
+        font-weight: 500;
+      }
+      .description {
+        padding: 0 1em;
+        text-align: right;
+        font-size: 0.8em;
+      }
+    }
+
+    .form {
+      padding: 1em 3em;
+      width: 70%;
+      display: flex;
+      gap: 0.8em;
+      flex-direction: column;
+
+      .field-container {
+        gap: 0.2em;
+        display: flex;
+        flex-direction: column;
+        text-align: right;
+
+        .field-title {
+          display: flex;
+          flex-direction: row;
+          padding-right: 0.2em;
+
+          .required {
+            color: red;
+          }
+          .error-message {
+            margin-right: 1em;
+            color: red;
+            font-size: 0.8em;
+          }
+        }
+
+        .select-field {
+          width: 100%;
+          border: 1px solid #00b7c3;
+          border-radius: 18px;
+          padding: 0.7em;
+          font-size: 1em;
+          font-weight: 400;
+
+          &:focus-visible {
+            outline: none;
+          }
+        }
+
+        .text-field {
+          border: 1px solid #00b7c3;
+          border-radius: 18px;
+          padding: 0.7em;
+          outline: none;
+          font-size: 1em;
+          font-weight: 400;
+
+          &:disabled {
+            background: gainsboro;
+          }
+
+          &::placeholder {
+            color: gray;
+            font-weight: 400;
+          }
+
+          &:focus {
+            border-color: #00b7c3;
+            box-shadow: 0 0 2px 0 #00b7c3;
+          }
+        }
+      }
+    }
+    .items-container {
+      border-color: #00b7c3;
+      border: 1px solid #00b7c3;
+      border-radius: 18px;
+      display: flex;
+      flex-direction: column;
+
+      .item {
+        padding: 0.5em;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        border-bottom: 1px solid #00b7c3;
+        font-weight: 500;
+
+        .options-container {
+          display: flex;
+          gap: 0.7em;
+          flex-direction: row;
+          align-items: center;
+
+          .quantity {
+            font-size: 1.2em;
+          }
+
+          .option-buttons {
+            align-items: center;
+            display: flex;
+            gap: 0.5em;
+
+            .edit-btn {
+              height: 1.2em;
+              align-items: center;
+              cursor: pointer;
+            }
+            .remove-btn {
+              cursor: pointer;
+              height: 1.2em;
+              color: red;
+            }
+          }
+        }
+      }
+      .add-button-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        button {
+          background: #00b7c3;
+          border: none;
+          margin: 0.5em;
+          padding: 0 0.5em;
+          border-radius: 18px;
+          width: 50%;
+        }
+      }
+    }
+    .form-btns {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1em;
+      .submit-button {
+        font-family: inherit;
+        align-self: center;
+        background: #00b7c3;
+        color: white;
+        border: none;
+        padding: 0.8em;
+        border-radius: 18px;
+        width: 50%;
+        font-size: 1.2em;
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .form-container {
+    min-width: 90%;
+  }
+}
