@@ -2,8 +2,10 @@
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Edit, Plus, X } from 'react-feather';
-import { useParams } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import { useNavigate, useParams } from 'react-router-dom';
 import AddItemModal from '../addItemModal/addItemModal';
+import Loader from '../Loader/Loader';
 import './form.css';
 
 const Form = ({ updateForm }) => {
@@ -12,9 +14,11 @@ const Form = ({ updateForm }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [itemToEdit, setItemToEdit] = useState(null);
 
-  const [isLoading, setIsLoading] = useState(updateForm);  // set to true if updateForm is true, else false
+  const [isLoading, setIsLoading] = useState(updateForm); // set to true if updateForm is true, else false
   const [isError, setIsError] = useState(false);
-  
+
+  const navigate = useNavigate();
+
   const { id } = useParams();
 
   const {
@@ -34,11 +38,13 @@ const Form = ({ updateForm }) => {
       location: '',
       tenant: '',
       subitems: [],
-    }
+    },
   });
 
   useEffect(() => {
-    fetch('https://njdfolzzmvnaay5oxqife4tuwy.apigateway.il-jerusalem-1.oci.customer-oci.com/v1/get-products')
+    fetch(
+      'https://njdfolzzmvnaay5oxqife4tuwy.apigateway.il-jerusalem-1.oci.customer-oci.com/v1/get-products'
+    )
       .then((res) => res.json())
       .then((data) => {
         if ('error' in data) {
@@ -46,17 +52,29 @@ const Form = ({ updateForm }) => {
           return;
         }
         setAvailableItems([...data]);
+      })
+      .catch((error) => {
+        console.error('There was an error fetching the data:', error);
+        setIsError(true);
+        return;
       });
 
     if (updateForm) {
-      fetch('https://njdfolzzmvnaay5oxqife4tuwy.apigateway.il-jerusalem-1.oci.customer-oci.com/v1/get-order?id=' + id)
+      fetch(
+        'https://njdfolzzmvnaay5oxqife4tuwy.apigateway.il-jerusalem-1.oci.customer-oci.com/v1/get-order?id=' +
+          id
+      )
         .then((res) => res.json())
         .then((data) => {
           if ('error' in data) {
             setIsError(true);
             return;
           }
-
+          if (data.is_cancel) {
+            setIsError(true);
+            return;
+          }
+          console.log(data);
           setSelectedItems([...data.subitems]);
 
           setAvailableItems((currentAvailableItems) => {
@@ -69,66 +87,59 @@ const Form = ({ updateForm }) => {
           });
 
           reset(data);
-          
+
           setIsLoading(false);
         })
         .catch((error) => {
           setIsLoading(false);
           setIsError(true);
-          console.error("There was an error fetching the data:", error);
+          console.error('There was an error fetching the data:', error);
+          return;
         });
     }
   }, []);
-
 
   if (isError) {
     return <div>Error!</div>;
   }
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
-
-  if (errors.length > 0) {
-    console.log(errors);
-  }
-  const onSubmit = (data) => {
-    data.subitems = selectedItems;
+  const onSubmit = (formData) => {
+    formData.subitems = selectedItems;
 
     if (updateForm) {
-      data.id = id;
+      formData.id = id;
     } else {
       let params = new URLSearchParams(window.location.search);
       let tenant = params.get('tenant');
-      data.tenant = tenant;
+      formData.tenant = tenant;
     }
-    
-    fetch('https://njdfolzzmvnaay5oxqife4tuwy.apigateway.il-jerusalem-1.oci.customer-oci.com/v1/create-update-order', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    }).then((res) => res.json())
-      .then((data) => {
-        // maybe handle error differently
-        if ('error' in data) {
-          setIsError(true);
-          return;
-        }
-        
-        console.log(data);
+    setIsLoading(true);
 
-        // redirect to id
-        window.location.href = '/' + updateForm ? id : data.id;
+    fetch(
+      'https://njdfolzzmvnaay5oxqife4tuwy.apigateway.il-jerusalem-1.oci.customer-oci.com/v1/create-update-order',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      }
+    )
+      .then((res) => {
+        res.json().then((data) => {
+          console.log(data);
+          setIsLoading(false);
+          toast.success('ההזמנה נשלחה בהצלחה');
+          if (!updateForm) {
+            return navigate(`/${data.id}`, { replace: true });
+          }
+        });
       })
       .catch((error) => {
-        console.error("There was an error submitting the data:", error);
-        // handle error ...
-      });
+        setIsLoading(false);
 
-    console.log(data);
+        toast.error('תקלה בעת שליחת הטופס, אנא נסו שוב במועד מאוחר יותר');
+      });
   };
 
   const toggleModal = (editItem) => {
@@ -176,6 +187,7 @@ const Form = ({ updateForm }) => {
 
   return (
     <div className='background'>
+      {isLoading && <Loader />}
       <div className='form-container'>
         <div className='header'>
           <img src='/Logo.png' alt='LOGO' className='logo' />
@@ -346,7 +358,7 @@ const Form = ({ updateForm }) => {
 
           <div className='form-btns'>
             <button className='submit-button' type='submit'>
-              {updateForm ? "עדכון בקשה" : "שליחת בקשה"}
+              {updateForm ? 'עדכון בקשה' : 'שליחת בקשה'}
             </button>
             {updateForm && (
               <button className='cancel-button'>ביטול בקשה</button>

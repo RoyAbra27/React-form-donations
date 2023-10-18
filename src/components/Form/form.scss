@@ -4,10 +4,10 @@
   height: 100%;
   display: flex;
   justify-content: center;
-  height: auto;
   overflow: hidden;
 
   .form-container {
+    height: 100%;
     border-radius: 16px;
     display: flex;
     flex-direction: column;
