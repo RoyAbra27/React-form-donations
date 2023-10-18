@@ -8,7 +8,7 @@ export default function App() {
     <BrowserRouter>
       <Routes>
         <Route path='/' element={<Form />} />
-        <Route path='/update' element={<Form updateForm={true} />} />
+        <Route path='/:id' element={<Form updateForm={true} />} />
       </Routes>
     </BrowserRouter>
   );

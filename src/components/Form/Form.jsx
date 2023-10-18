@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Edit, Plus, X } from 'react-feather';
+import { useParams } from 'react-router-dom';
 import AddItemModal from '../addItemModal/addItemModal';
 import './form.css';
 
@@ -11,17 +12,51 @@ const Form = ({ updateForm }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [itemToEdit, setItemToEdit] = useState(null);
 
+  const [isLoading, setIsLoading] = useState(updateForm);  // set to true if updateForm is true, else false
+  const [isError, setIsError] = useState(false);
+  
+  const { id } = useParams();
+
+  const {
+    register,
+    handleSubmit,
+    watch,
+    reset,
+    formState: { errors },
+  } = useForm({
+    mode: 'onBlur',
+    defaultValues: {
+      name: '',
+      phone: '',
+      unit: '',
+      job: '',
+      email: '',
+      location: '',
+      tenant: '',
+      subitems: [],
+    }
+  });
+
   useEffect(() => {
-    fetch('http://localhost:5173/items/items.json')
+    fetch('https://njdfolzzmvnaay5oxqife4tuwy.apigateway.il-jerusalem-1.oci.customer-oci.com/v1/get-products')
       .then((res) => res.json())
       .then((data) => {
+        if ('error' in data) {
+          setIsError(true);
+          return;
+        }
         setAvailableItems([...data]);
       });
 
     if (updateForm) {
-      fetch('http://localhost:5173/data/forms.json')
+      fetch('https://njdfolzzmvnaay5oxqife4tuwy.apigateway.il-jerusalem-1.oci.customer-oci.com/v1/get-order?id=' + id)
         .then((res) => res.json())
         .then((data) => {
+          if ('error' in data) {
+            setIsError(true);
+            return;
+          }
+
           setSelectedItems([...data.subitems]);
 
           setAvailableItems((currentAvailableItems) => {
@@ -32,39 +67,64 @@ const Form = ({ updateForm }) => {
                 )
             );
           });
+
+          reset(data);
+          
+          setIsLoading(false);
+        })
+        .catch((error) => {
+          setIsLoading(false);
+          setIsError(true);
+          console.error("There was an error fetching the data:", error);
         });
     }
   }, []);
 
-  const {
-    register,
-    handleSubmit,
-    watch,
-    formState: { errors },
-  } = useForm({
-    mode: 'onBlur',
-    defaultValues: updateForm
-      ? async () =>
-          (await fetch('http://localhost:5173/data/forms.json')).json()
-      : {
-          name: '',
-          phone: '',
-          unit: '',
-          job: '',
-          email: '',
-          location: '',
-          tenant: '',
-          subitems: [],
-        },
-  });
+
+  if (isError) {
+    return <div>Error!</div>;
+  }
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
 
   if (errors.length > 0) {
     console.log(errors);
   }
   const onSubmit = (data) => {
-    const params = new URLSearchParams(window.location.pathname);
     data.subitems = selectedItems;
-    data.tenant = params.get('tenant');
+
+    if (updateForm) {
+      data.id = id;
+    } else {
+      data.tenant = new URLSearchParams(window.location.pathname).get('tenant');
+    }
+    
+    fetch('https://njdfolzzmvnaay5oxqife4tuwy.apigateway.il-jerusalem-1.oci.customer-oci.com/v1/create-update-order', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    }).then((res) => res.json())
+      .then((data) => {
+        // maybe handle error differently
+        if ('error' in data) {
+          setIsError(true);
+          return;
+        }
+        
+        console.log(data);
+
+        // redirect to id
+        window.location.href = '/' + updateForm ? id : data.id;
+      })
+      .catch((error) => {
+        console.error("There was an error submitting the data:", error);
+        // handle error ...
+      });
 
     console.log(data);
   };
@@ -284,7 +344,7 @@ const Form = ({ updateForm }) => {
 
           <div className='form-btns'>
             <button className='submit-button' type='submit'>
-              שלח בקשה
+              {updateForm ? "עדכון בקשה" : "שליחת בקשה"}
             </button>
             {updateForm && (
               <button className='cancel-button'>ביטול בקשה</button>
