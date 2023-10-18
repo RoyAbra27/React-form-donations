@@ -99,7 +99,9 @@ const Form = ({ updateForm }) => {
     if (updateForm) {
       data.id = id;
     } else {
-      data.tenant = new URLSearchParams(window.location.pathname).get('tenant');
+      let params = new URLSearchParams(window.location.search);
+      let tenant = params.get('tenant');
+      data.tenant = tenant;
     }
     
     fetch('https://njdfolzzmvnaay5oxqife4tuwy.apigateway.il-jerusalem-1.oci.customer-oci.com/v1/create-update-order', {
