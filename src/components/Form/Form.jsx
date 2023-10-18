@@ -125,16 +125,21 @@ const Form = ({ updateForm }) => {
         body: JSON.stringify(formData),
       }
     )
-      .then((res) => {
-        res.json().then((data) => {
-          console.log(data);
+      .then((res) => res.json()
+      .then((data) => {
           setIsLoading(false);
+
+          if ('error' in data) {
+            toast.error('תקלה בעת שליחת הטופס, אנא נסו שוב במועד מאוחר יותר');
+            return;
+          }
+
           toast.success('ההזמנה נשלחה בהצלחה');
+
           if (!updateForm) {
             return navigate(`/${data.id}`, { replace: true });
           }
-        });
-      })
+        }))
       .catch((error) => {
         setIsLoading(false);
 
