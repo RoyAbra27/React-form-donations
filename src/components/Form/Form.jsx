@@ -114,6 +114,7 @@ const Form = ({ updateForm }) => {
 
   return (
     <div className='background'>
+      {/* <Loader></Loader> */}
       <div className='form-container'>
         <div className='header'>
           <img src='/Logo.png' alt='LOGO' className='logo' />
@@ -127,119 +128,122 @@ const Form = ({ updateForm }) => {
           </div>
         </div>
         <form className='form' onSubmit={handleSubmit(onSubmit)}>
-          <div className='field-container'>
-            <div className='field-title'>
-              <label>שם מלא</label>
-              <div className='required'>*</div>
-              <div className='error-message'>{errors.name?.message}</div>
+          <div className='grid-container'>
+            <div className='field-container'>
+              <div className='field-title'>
+                <label>שם מלא</label>
+                <div className='required'>*</div>
+                <div className='error-message'>{errors.name?.message}</div>
+              </div>
+              <input
+                disabled={updateForm}
+                className='text-field'
+                type='text'
+                placeholder='שם מלא'
+                {...register('name', { required: 'זהו שדה חובה' })}
+              />
             </div>
-            <input
-              disabled={updateForm}
-              className='text-field'
-              type='text'
-              placeholder='שם מלא'
-              {...register('name', { required: 'זהו שדה חובה' })}
-            />
-          </div>
-          <div className='field-container'>
-            <div className='field-title'>
-              <label>מספר טלפון</label>
-              <div className='required'>*</div>
-              <div className='error-message'>{errors.phone?.message}</div>
+            <div className='field-container'>
+              <div className='field-title'>
+                <label>מספר טלפון</label>
+                <div className='required'>*</div>
+                <div className='error-message'>{errors.phone?.message}</div>
+              </div>
+              <input
+                disabled={updateForm}
+                className='text-field'
+                type='tel'
+                placeholder='מספר טלפון'
+                {...register('phone', {
+                  pattern: {
+                    message: 'מספר טלפון זה אינו תקין',
+                    value:
+                      /^[+]?[(]?[0-9]{3}[)]?[-\s.]?[0-9]{3}[-\s.]?[0-9]{4,6}$/,
+                  },
+                  required: 'זהו שדה חובה',
+                  minLength: {
+                    value: 6,
+                    message: 'מספר טלפון זה אינו תקין',
+                  },
+                  maxLength: {
+                    value: 12,
+                    message: 'מספר טלפון זה אינו תקין',
+                  },
+                })}
+              />
             </div>
-            <input
-              disabled={updateForm}
-              className='text-field'
-              type='tel'
-              placeholder='מספר טלפון'
-              {...register('phone', {
-                pattern: {
-                  message: 'מספר טלפון זה אינו תקין',
-                  value:
-                    /^[+]?[(]?[0-9]{3}[)]?[-\s.]?[0-9]{3}[-\s.]?[0-9]{4,6}$/,
-                },
-                required: 'זהו שדה חובה',
-                minLength: {
-                  value: 6,
-                  message: 'מספר טלפון זה אינו תקין',
-                },
-                maxLength: {
-                  value: 12,
-                  message: 'מספר טלפון זה אינו תקין',
-                },
-              })}
-            />
-          </div>
-          <div className='field-container'>
-            <div className='field-title'>
-              <label>כתובת מייל</label>
-              <div className='required'>*</div>
-              <div className='error-message'>{errors.email?.message}</div>
-            </div>
-            <input
-              disabled={updateForm}
-              className='text-field'
-              type='email'
-              placeholder='כתובת מייל'
-              {...register('email', {
-                required: 'זהו שדה חובה',
-                pattern: {
-                  value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                  message: 'כתובת מייל אינה תקינה',
-                },
-              })}
-            />
-          </div>
-          <div className='field-container'>
-            <div className='field-title'>
-              <label>יחידה</label>
-              <div className='required'>*</div>
-              <div className='error-message'>{errors.unit?.message}</div>
-            </div>
-            <input
-              disabled={updateForm}
-              className='text-field'
-              type='text'
-              placeholder='יחידה'
-              {...register('unit', { required: 'זהו שדה חובה' })}
-            />
-          </div>
-          <div className='field-container'>
-            <div className='field-title'>
-              <label>תפקיד</label>
-              <div className='required'>*</div>
-              <div className='error-message'>{errors.job?.message}</div>
-            </div>
-            <input
-              disabled={updateForm}
-              className='text-field'
-              type='text'
-              placeholder='תפקיד'
-              {...register('job', { required: 'זהו שדה חובה' })}
-            />
-          </div>
-          <div className='field-container'>
-            <div className='field-title'>
-              <label>מיקום</label>
-              <div className='required'>*</div>
-              <div className='error-message'>{errors.location?.message}</div>
-            </div>
-            <select
-              className='select-field'
-              defaultValue={watch('location')}
-              {...register('location', { required: 'זהו שדה חובה' })}
-            >
-              <option disabled={true} value=''>
-                בחר מיקום
-              </option>
 
-              <option value='צפון'>צפון</option>
-              <option value='דרום'>דרום</option>
-              <option value='אחר'>אחר</option>
-            </select>
+            <div className='field-container'>
+              <div className='field-title'>
+                <label>כתובת מייל</label>
+                <div className='required'>*</div>
+                <div className='error-message'>{errors.email?.message}</div>
+              </div>
+              <input
+                disabled={updateForm}
+                className='text-field'
+                type='email'
+                placeholder='כתובת מייל'
+                {...register('email', {
+                  required: 'זהו שדה חובה',
+                  pattern: {
+                    value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                    message: 'כתובת מייל אינה תקינה',
+                  },
+                })}
+              />
+            </div>
+            <div className='field-container'>
+              <div className='field-title'>
+                <label>יחידה</label>
+                <div className='required'>*</div>
+                <div className='error-message'>{errors.unit?.message}</div>
+              </div>
+              <input
+                disabled={updateForm}
+                className='text-field'
+                type='text'
+                placeholder='יחידה'
+                {...register('unit', { required: 'זהו שדה חובה' })}
+              />
+            </div>
+            <div className='field-container'>
+              <div className='field-title'>
+                <label>תפקיד</label>
+                <div className='required'>*</div>
+                <div className='error-message'>{errors.job?.message}</div>
+              </div>
+              <input
+                disabled={updateForm}
+                className='text-field'
+                type='text'
+                placeholder='תפקיד'
+                {...register('job', { required: 'זהו שדה חובה' })}
+              />
+            </div>
+            <div className='field-container'>
+              <div className='field-title'>
+                <label>מיקום</label>
+                <div className='required'>*</div>
+                <div className='error-message'>{errors.location?.message}</div>
+              </div>
+              <select
+                className='select-field'
+                defaultValue={watch('location')}
+                {...register('location', { required: 'זהו שדה חובה' })}
+              >
+                <option disabled={true} value=''>
+                  בחר מיקום
+                </option>
+
+                <option value='צפון'>צפון</option>
+                <option value='דרום'>דרום</option>
+                <option value='אחר'>אחר</option>
+              </select>
+            </div>
           </div>
 
-          <div>בחירת פריטים:</div>
+          <label>בחירת פריטים:</label>
           <div className='items-container'>
             {selectedItems.map((item) => (
               <div key={item.product_number} className='item'>
@@ -267,6 +271,9 @@ const Form = ({ updateForm }) => {
             </div>
           </div>
           <div className='field-container'>
+            <div className='field-title'>
+              <label>הערות</label>
+            </div>
             <textarea
               className='text-field'
               placeholder='הערות'

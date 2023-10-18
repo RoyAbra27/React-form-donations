@@ -1,7 +1,7 @@
 .background {
   background-color: gainsboro;
-  height: 100%;
   width: 100%;
+  height: 100%;
   display: flex;
   justify-content: center;
   height: auto;
@@ -14,6 +14,7 @@
     align-items: center;
     justify-content: center;
     background-color: white;
+    box-shadow: 0px 4px 12px 5px rgba(0, 0, 0, 0.1);
     margin: 2em;
     width: 45%;
 
@@ -38,18 +39,33 @@
       }
     }
 
+    .grid-container {
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      grid-template-rows: repeat(3, auto); // Three rows
+      column-gap: 0.5em;
+      :nth-child(-n + 2) {
+        grid-column: span 3;
+      }
+      :nth-child(3) {
+        grid-column: span 6;
+      }
+      :nth-last-child(-n + 3) {
+        grid-column: span 2;
+      }
+    }
     .form {
-      padding: 1em 3em;
-      width: 70%;
-      display: flex;
-      gap: 0.8em;
-      flex-direction: column;
+      padding: 1em;
+      min-width: 70%;
 
       .field-container {
-        gap: 0.2em;
+        padding: 0.5em 0;
+        gap: 0.1em;
         display: flex;
         flex-direction: column;
         text-align: right;
+        overflow: hidden;
 
         .field-title {
           display: flex;
