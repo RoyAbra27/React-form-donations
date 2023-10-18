@@ -117,8 +117,10 @@ const Form = ({ updateForm }) => {
       <div className='form-container'>
         <div className='header'>
           <img src='/Logo.png' alt='LOGO' className='logo' />
-          <div className='title'>בקשה לתרומה לציוד לחימה</div>
-          <div className='description'>
+          <div className='title'>
+            {updateForm ? 'עדכון טופס' : 'בקשה לתרומה לציוד לחימה '}
+          </div>
+          <div className='description' hidden={updateForm}>
             טופס זה מיועד למשרתים פעילים בצה״ל סדיר ,מילואים וקבע. אם הינך אדם
             פרטי וברצונך לסייע לכח לוחם בהשלמת ציוד , אנא הפנה טופס זה לקצין
             האמל״ח או לגורם רלוונטי ביחידה. נא לרכז את כל הפריטים בטופס אחד
@@ -275,13 +277,12 @@ const Form = ({ updateForm }) => {
           </div>
 
           <div className='form-btns'>
-            {updateForm && (
-              <button className='submit-button'>ביטול בקשה</button>
-            )}
-
             <button className='submit-button' type='submit'>
               שלח בקשה
             </button>
+            {updateForm && (
+              <button className='cancel-button'>ביטול בקשה</button>
+            )}
           </div>
         </form>
       </div>

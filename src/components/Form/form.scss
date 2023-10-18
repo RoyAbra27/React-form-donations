@@ -103,6 +103,7 @@
         }
       }
     }
+
     .items-container {
       border-color: #00b7c3;
       border: 1px solid #00b7c3;
@@ -169,6 +170,17 @@
         font-family: inherit;
         align-self: center;
         background: #00b7c3;
+        color: white;
+        border: none;
+        padding: 0.8em;
+        border-radius: 18px;
+        width: 50%;
+        font-size: 1.2em;
+      }
+      .cancel-button {
+        font-family: inherit;
+        align-self: center;
+        background: rgb(255, 2, 2);
         color: white;
         border: none;
         padding: 0.8em;

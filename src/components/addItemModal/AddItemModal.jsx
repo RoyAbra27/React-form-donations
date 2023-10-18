@@ -41,34 +41,36 @@ const AddItemModal = ({
       <div className='modal-content'>
         <div className='title'>הוספת/עדכון פריט</div>
         <div className='modal-form'>
-          <select
-            required={selectedItems.length === 0}
-            className='select-field'
-            value={selectedItem?.name ? selectedItem.name : ''}
-            onChange={(e) => handleOnChange(e.target.value)}
-          >
-            <option disabled={true} value=''>
-              בחר פריט
-            </option>
-            {itemToEdit ? (
-              <option value={itemToEdit.name}>{itemToEdit.name}</option>
-            ) : null}
-            {availableItems.map((item) => (
-              <option key={item.product_number} value={item.name}>
-                {item.name}
+          <div className='fields'>
+            <select
+              required={selectedItems.length === 0}
+              className='select-field'
+              value={selectedItem?.name ? selectedItem.name : ''}
+              onChange={(e) => handleOnChange(e.target.value)}
+            >
+              <option disabled={true} value=''>
+                בחר פריט
               </option>
-            ))}
-          </select>
-          {selectedItem ? (
-            <input
-              type='number'
-              min={1}
-              max={99}
-              value={selectedItem.quantity || 1}
-              onChange={(e) => updateQuantity(e.target.value)}
-              className='quantity-input'
-            />
-          ) : null}
+              {itemToEdit ? (
+                <option value={itemToEdit.name}>{itemToEdit.name}</option>
+              ) : null}
+              {availableItems.map((item) => (
+                <option key={item.product_number} value={item.name}>
+                  {item.name}
+                </option>
+              ))}
+            </select>
+            {selectedItem ? (
+              <input
+                type='number'
+                min={1}
+                max={99}
+                value={selectedItem.quantity || 1}
+                onChange={(e) => updateQuantity(e.target.value)}
+                className='quantity-input'
+              />
+            ) : null}
+          </div>
           <button
             onClick={handleConfirm}
             disabled={!selectedItem}
