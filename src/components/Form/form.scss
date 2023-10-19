@@ -4,10 +4,11 @@
   height: 100%;
   display: flex;
   justify-content: center;
-  overflow-y: scroll;
+  overflow-y: auto;
+  overflow-x: hidden;
 
   .form-container {
-    height: 100%;
+    height: fit-content;
     border-radius: 16px;
     display: flex;
     flex-direction: column;
@@ -15,7 +16,7 @@
     justify-content: center;
     background-color: white;
     box-shadow: 0px 4px 12px 5px rgba(0, 0, 0, 0.1);
-    margin: 2em;
+    margin: 1.5em;
     width: 45%;
 
     .header {
@@ -215,7 +216,7 @@
 }
 @media (max-width: 375px) {
   .form-container {
-    min-width: 98%;
+    min-width: 95%;
     font-size: 0.9em;
   }
 }
