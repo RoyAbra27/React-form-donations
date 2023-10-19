@@ -213,3 +213,9 @@
     min-width: 90%;
   }
 }
+@media (max-width: 375px) {
+  .form-container {
+    min-width: 98%;
+    font-size: 0.9em;
+  }
+}
