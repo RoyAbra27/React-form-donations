@@ -72,7 +72,7 @@ const Form = ({ updateForm }) => {
             return;
           }
           if (data.is_cancel) {
-            setIsError('cancel');
+            setErrorType('cancel');
             return;
           }
           console.log(data);
