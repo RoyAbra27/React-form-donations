@@ -5,6 +5,7 @@ import { Edit, Plus, X } from 'react-feather';
 import { toast } from 'react-toastify';
 import { useNavigate, useParams } from 'react-router-dom';
 import AddItemModal from '../addItemModal/addItemModal';
+import ErrorPage from '../ErrorPage/ErrorPage';
 import Loader from '../Loader/Loader';
 import './form.css';
 
@@ -15,7 +16,7 @@ const Form = ({ updateForm }) => {
   const [itemToEdit, setItemToEdit] = useState(null);
 
   const [isLoading, setIsLoading] = useState(updateForm); // set to true if updateForm is true, else false
-  const [isError, setIsError] = useState(false);
+  const [errorType, setErrorType] = useState('');
 
   const navigate = useNavigate();
 
@@ -48,14 +49,14 @@ const Form = ({ updateForm }) => {
       .then((res) => res.json())
       .then((data) => {
         if ('error' in data) {
-          setIsError(true);
+          setErrorType('error');
           return;
         }
         setAvailableItems([...data]);
       })
       .catch((error) => {
         console.error('There was an error fetching the data:', error);
-        setIsError(true);
+        setErrorType('error');
         return;
       });
 
@@ -67,11 +68,11 @@ const Form = ({ updateForm }) => {
         .then((res) => res.json())
         .then((data) => {
           if ('error' in data) {
-            setIsError(true);
+            setErrorType('error');
             return;
           }
           if (data.is_cancel) {
-            setIsError(true);
+            setIsError('cancel');
             return;
           }
           console.log(data);
@@ -92,16 +93,29 @@ const Form = ({ updateForm }) => {
         })
         .catch((error) => {
           setIsLoading(false);
-          setIsError(true);
+          setErrorType('error');
           console.error('There was an error fetching the data:', error);
           return;
         });
     }
   }, []);
 
-  if (isError) {
-    return <div>Error!</div>;
-  }
+  const getErrorPage = () => {
+    let title, content;
+    switch (errorType) {
+      case 'error':
+        title = 'שגיאה';
+        content = 'אנא נסו שנית במועד מאוחר יותר.';
+        break;
+      case 'cancel':
+        title = 'הזמנה זו בוטלה.';
+        content = 'אנא שלחו טופס חדש בהתאם לצורך.';
+        break;
+      default:
+        return;
+    }
+    return <ErrorPage title={title} content={content} />;
+  };
 
   const onSubmit = (formData) => {
     formData.subitems = selectedItems;
@@ -125,8 +139,8 @@ const Form = ({ updateForm }) => {
         body: JSON.stringify(formData),
       }
     )
-      .then((res) => res.json()
-      .then((data) => {
+      .then((res) =>
+        res.json().then((data) => {
           setIsLoading(false);
 
           if ('error' in data) {
@@ -139,7 +153,8 @@ const Form = ({ updateForm }) => {
           if (!updateForm) {
             return navigate(`/${data.id}`, { replace: true });
           }
-        }))
+        })
+      )
       .catch((error) => {
         setIsLoading(false);
 
@@ -193,6 +208,7 @@ const Form = ({ updateForm }) => {
   return (
     <div className='background'>
       {isLoading && <Loader />}
+      {getErrorPage()}
       <div className='form-container'>
         <div className='header'>
           <img src='/Logo.png' alt='LOGO' className='logo' />
