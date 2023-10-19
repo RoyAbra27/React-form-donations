@@ -195,7 +195,7 @@ const Form = ({ updateForm }) => {
       {isLoading && <Loader />}
       <div className='form-container'>
         <div className='header'>
-          <img src='/Logo.png' alt='LOGO' className='logo' />
+          <img src='/content/Logo.png' alt='LOGO' className='logo' />
           <div className='title'>
             {updateForm ? 'עדכון טופס' : 'בקשה לתרומה לציוד לחימה '}
           </div>
