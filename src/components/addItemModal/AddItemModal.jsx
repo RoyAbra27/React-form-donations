@@ -16,18 +16,24 @@ const AddItemModal = ({
   const [selectedItem, setSelectedItem] = useState(
     itemToEdit ? itemToEdit : null
   );
+  const [inputQuantity, setInputQuantity] = useState(1);
+
   const handleOnChange = (itemName) => {
     const item = availableItems.find((i) => i.name === itemName);
     setSelectedItem({ ...item, quantity: 1 });
   };
 
   const handleConfirm = () => {
-    itemToEdit ? onEditItem(selectedItem) : onAddItem(selectedItem);
+    const finalItem = {
+      ...selectedItem,
+      quantity: inputQuantity <= 0 ? 1 : inputQuantity,
+    };
+    itemToEdit ? onEditItem(finalItem) : onAddItem(finalItem);
     onRequestClose();
   };
 
   const updateQuantity = (quanity) => {
-    setSelectedItem({ ...selectedItem, quantity: quanity });
+    setInputQuantity(quanity);
   };
 
   return (
@@ -55,7 +61,11 @@ const AddItemModal = ({
                 <option value={itemToEdit.name}>{itemToEdit.name}</option>
               ) : null}
               {availableItems.map((item) => (
-                <option key={item.product_number} value={item.name}>
+                <option
+                  className='option'
+                  key={item.product_number}
+                  value={item.name}
+                >
                   {item.name}
                 </option>
               ))}
@@ -65,7 +75,7 @@ const AddItemModal = ({
                 type='number'
                 min={1}
                 max={99}
-                value={selectedItem.quantity || 1}
+                value={inputQuantity}
                 onChange={(e) => updateQuantity(e.target.value)}
                 className='quantity-input'
               />

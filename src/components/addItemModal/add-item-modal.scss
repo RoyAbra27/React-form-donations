@@ -6,10 +6,9 @@
   border: 1px solid #00b7c3;
   background-color: white;
   border-radius: 16px;
-  overflow: hidden;
-  width: 30%;
-  min-height: fit-content;
-  min-width: fit-content;
+  height: 25%;
+  width: 40%;
+
   .modal-content {
     display: flex;
     flex-direction: column;
@@ -19,6 +18,7 @@
     margin: 1em;
     width: auto;
     height: 90%;
+
     .title {
       font-weight: 500;
       font-size: 1.3em;
@@ -32,8 +32,8 @@
       display: flex;
       align-items: center;
       flex-direction: column;
-      gap: 1em;
       justify-content: space-between;
+
       .fields {
         justify-content: center;
         display: flex;
@@ -72,6 +72,9 @@
     font-size: 1em;
     font-weight: 400;
 
+    option {
+      display: inline-block;
+    }
     &:focus-visible {
       outline: none;
     }
@@ -89,7 +92,19 @@
 
 @media (max-width: 768px) {
   .modal-container {
-    min-width: 80%;
-    min-height: 30%;
+    min-width: 70%;
+  }
+}
+
+@media (max-width: 375px) {
+  .modal-container {
+    height: fit-content;
+  }
+  .fields {
+    flex-direction: column;
+    padding: 1em;
+    .select-field {
+      width: auto;
+    }
   }
 }

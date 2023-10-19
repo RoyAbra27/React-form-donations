@@ -16,7 +16,8 @@
     justify-content: center;
     background-color: white;
     box-shadow: 0px 4px 12px 5px rgba(0, 0, 0, 0.1);
-    margin: 1.5em;
+    margin: 3em;
+    padding: 1em 0;
     width: 45%;
 
     .header {
@@ -66,9 +67,10 @@
         display: flex;
         flex-direction: column;
         text-align: right;
-        overflow: hidden;
 
         .field-title {
+          font-size: 0.9em;
+          width: max-content;
           display: flex;
           flex-direction: row;
           padding-right: 0.2em;
@@ -77,7 +79,7 @@
             color: red;
           }
           .error-message {
-            margin-right: 1em;
+            margin-right: 0.5em;
             color: red;
             font-size: 0.8em;
           }
@@ -96,6 +98,11 @@
           }
         }
 
+        .option {
+          overflow-y: scroll;
+          color: #00b7c3;
+          background-color: #00b7c3;
+        }
         .text-field {
           border: 1px solid #00b7c3;
           border-radius: 18px;

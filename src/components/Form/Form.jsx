@@ -4,15 +4,26 @@ import { useForm } from 'react-hook-form';
 import { Edit, Plus, X } from 'react-feather';
 import { toast } from 'react-toastify';
 import { useNavigate, useParams } from 'react-router-dom';
-import AddItemModal from '../addItemModal/addItemModal';
+import AddItemModal from '../AddItemModal/AddItemModal';
+import ConfirmationModal from '../ConfirmationModal/ConfirmationModal';
 import ErrorPage from '../ErrorPage/ErrorPage';
 import Loader from '../Loader/Loader';
 import './form.css';
 
+const defaultValues = {
+  name: '',
+  phone: '',
+  unit: '',
+  job: '',
+  email: '',
+  location: '',
+  tenant: '',
+  subitems: [],
+};
 const Form = ({ updateForm }) => {
   const [selectedItems, setSelectedItems] = useState([]);
   const [availableItems, setAvailableItems] = useState([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalToOpen, setModalToOpen] = useState(null);
   const [itemToEdit, setItemToEdit] = useState(null);
 
   const [isLoading, setIsLoading] = useState(updateForm); // set to true if updateForm is true, else false
@@ -30,24 +41,17 @@ const Form = ({ updateForm }) => {
     formState: { errors },
   } = useForm({
     mode: 'onBlur',
-    defaultValues: {
-      name: '',
-      phone: '',
-      unit: '',
-      job: '',
-      email: '',
-      location: '',
-      tenant: '',
-      subitems: [],
-    },
+    defaultValues: defaultValues,
   });
 
   useEffect(() => {
+    setIsLoading(true);
     fetch(
       'https://njdfolzzmvnaay5oxqife4tuwy.apigateway.il-jerusalem-1.oci.customer-oci.com/v1/get-products'
     )
       .then((res) => res.json())
       .then((data) => {
+        setIsLoading(false);
         if ('error' in data) {
           setErrorType('error');
           return;
@@ -55,6 +59,8 @@ const Form = ({ updateForm }) => {
         setAvailableItems([...data]);
       })
       .catch((error) => {
+        setIsLoading(false);
+
         console.error('There was an error fetching the data:', error);
         setErrorType('error');
         return;
@@ -75,7 +81,6 @@ const Form = ({ updateForm }) => {
             setErrorType('cancel');
             return;
           }
-          console.log(data);
           setSelectedItems([...data.subitems]);
 
           setAvailableItems((currentAvailableItems) => {
@@ -117,6 +122,42 @@ const Form = ({ updateForm }) => {
     return <ErrorPage title={title} content={content} />;
   };
 
+  const onCancelForm = () => {
+    setIsLoading(true);
+    setModalToOpen(null);
+    fetch(
+      'https://njdfolzzmvnaay5oxqife4tuwy.apigateway.il-jerusalem-1.oci.customer-oci.com/v1/create-update-order',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ id, is_cancel: true }),
+      }
+    )
+      .then((res) =>
+        res.json().then((data) => {
+          setIsLoading(false);
+
+          if ('error' in data) {
+            console.log(data.error);
+            toast.error('תקלה בעת שליחת הטופס, אנא נסו שוב במועד מאוחר יותר');
+            return;
+          }
+          toast.success('הבקשה שלך בוטלה בהצלה!');
+          reset(defaultValues);
+
+          navigate('/', { replace: true });
+          window.location.reload(false);
+        })
+      )
+      .catch((error) => {
+        setIsLoading(false);
+
+        toast.error('תקלה בעת ביטל הטופס, אנא נסו שוב במועד מאוחר יותר');
+      });
+  };
+
   const onSubmit = (formData) => {
     formData.subitems = selectedItems;
 
@@ -148,7 +189,7 @@ const Form = ({ updateForm }) => {
             return;
           }
 
-          toast.success('ההזמנה נשלחה בהצלחה');
+          toast.success('הבקשה נשלחה בהצלחה');
 
           if (!updateForm) {
             return navigate(`/${data.id}`, { replace: true });
@@ -168,7 +209,7 @@ const Form = ({ updateForm }) => {
     } else {
       setItemToEdit(null);
     }
-    setIsModalOpen(true);
+    setModalToOpen('items');
   };
 
   const onAddItem = (newItem) => {
@@ -226,7 +267,7 @@ const Form = ({ updateForm }) => {
             <div className='field-container'>
               <div className='field-title'>
                 <label>שם מלא</label>
-                <div className='required'>*</div>
+                <span className='required'>*</span>
                 <div className='error-message'>{errors.name?.message}</div>
               </div>
               <input
@@ -234,13 +275,13 @@ const Form = ({ updateForm }) => {
                 className='text-field'
                 type='text'
                 placeholder='שם מלא'
-                {...register('name', { required: 'זהו שדה חובה' })}
+                {...register('name', { required: 'חובה' })}
               />
             </div>
             <div className='field-container'>
               <div className='field-title'>
                 <label>מספר טלפון</label>
-                <div className='required'>*</div>
+                <span className='required'>*</span>
                 <div className='error-message'>{errors.phone?.message}</div>
               </div>
               <input
@@ -254,7 +295,7 @@ const Form = ({ updateForm }) => {
                     value:
                       /^[+]?[(]?[0-9]{3}[)]?[-\s.]?[0-9]{3}[-\s.]?[0-9]{4,6}$/,
                   },
-                  required: 'זהו שדה חובה',
+                  required: 'חובה',
                   minLength: {
                     value: 6,
                     message: 'מספר טלפון זה אינו תקין',
@@ -270,7 +311,7 @@ const Form = ({ updateForm }) => {
             <div className='field-container'>
               <div className='field-title'>
                 <label>כתובת מייל</label>
-                <div className='required'>*</div>
+                <span className='required'>*</span>
                 <div className='error-message'>{errors.email?.message}</div>
               </div>
               <input
@@ -279,7 +320,7 @@ const Form = ({ updateForm }) => {
                 type='email'
                 placeholder='כתובת מייל'
                 {...register('email', {
-                  required: 'זהו שדה חובה',
+                  required: 'חובה',
                   pattern: {
                     value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
                     message: 'כתובת מייל אינה תקינה',
@@ -290,7 +331,7 @@ const Form = ({ updateForm }) => {
             <div className='field-container'>
               <div className='field-title'>
                 <label>יחידה</label>
-                <div className='required'>*</div>
+                <span className='required'>*</span>
                 <div className='error-message'>{errors.unit?.message}</div>
               </div>
               <input
@@ -298,13 +339,13 @@ const Form = ({ updateForm }) => {
                 className='text-field'
                 type='text'
                 placeholder='יחידה'
-                {...register('unit', { required: 'זהו שדה חובה' })}
+                {...register('unit', { required: 'חובה' })}
               />
             </div>
             <div className='field-container'>
               <div className='field-title'>
                 <label>תפקיד</label>
-                <div className='required'>*</div>
+                <span className='required'>*</span>
                 <div className='error-message'>{errors.job?.message}</div>
               </div>
               <input
@@ -312,22 +353,22 @@ const Form = ({ updateForm }) => {
                 className='text-field'
                 type='text'
                 placeholder='תפקיד'
-                {...register('job', { required: 'זהו שדה חובה' })}
+                {...register('job', { required: 'חובה' })}
               />
             </div>
             <div className='field-container'>
               <div className='field-title'>
                 <label>מיקום</label>
-                <div className='required'>*</div>
+                <span className='required'>*</span>
                 <div className='error-message'>{errors.location?.message}</div>
               </div>
               <select
                 className='select-field'
                 defaultValue={watch('location')}
-                {...register('location', { required: 'זהו שדה חובה' })}
+                {...register('location', { required: 'חובה' })}
               >
                 <option disabled={true} value=''>
-                  בחר מיקום
+                  מיקום
                 </option>
 
                 <option value='צפון'>צפון</option>
@@ -359,7 +400,7 @@ const Form = ({ updateForm }) => {
               </div>
             ))}
             <div className='add-button-container'>
-              <button type='button' onClick={() => setIsModalOpen(true)}>
+              <button type='button' onClick={() => setModalToOpen('items')}>
                 <Plus />
               </button>
             </div>
@@ -382,23 +423,32 @@ const Form = ({ updateForm }) => {
               {updateForm ? 'עדכון בקשה' : 'שליחת בקשה'}
             </button>
             {updateForm && (
-              <button className='cancel-button'>ביטול בקשה</button>
+              <button
+                type='button'
+                className='cancel-button'
+                onClick={() => setModalToOpen('confirmation')}
+              >
+                ביטול בקשה
+              </button>
             )}
           </div>
         </form>
       </div>
+      <ConfirmationModal
+        isModalOpen={modalToOpen === 'confirmation'}
+        onRequestClose={() => setModalToOpen(null)}
+        onCancelForm={onCancelForm}
+      />
 
-      {isModalOpen && (
-        <AddItemModal
-          isModalOpen={isModalOpen}
-          onRequestClose={() => setIsModalOpen(false)}
-          selectedItems={selectedItems}
-          onAddItem={onAddItem}
-          onEditItem={onEditItem}
-          availableItems={availableItems}
-          itemToEdit={itemToEdit}
-        />
-      )}
+      <AddItemModal
+        isModalOpen={modalToOpen === 'items'}
+        onRequestClose={() => setModalToOpen(null)}
+        selectedItems={selectedItems}
+        onAddItem={onAddItem}
+        onEditItem={onEditItem}
+        availableItems={availableItems}
+        itemToEdit={itemToEdit}
+      />
     </div>
   );
 };
