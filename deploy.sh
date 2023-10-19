@@ -18,10 +18,13 @@ else
 
     # Filter objects with .css and .js extensions and delete them
     for object in $OBJECTS; do
-        if [[ $object == *.css ]] || [[ $object == *.js ]]; then
-            echo "Deleting $object from $BUCKET_NAME..."
-            oci os object delete --bucket-name="$BUCKET_NAME" --name="$object" --force
-        fi
+        echo "Deleting $object from $BUCKET_NAME..."
+        oci os object delete --bucket-name="$BUCKET_NAME" --name="$object" --force
+
+        # if [[ $object == *.css ]] || [[ $object == *.js ]]; then
+        #     echo "Deleting $object from $BUCKET_NAME..."
+        #     oci os object delete --bucket-name="$BUCKET_NAME" --name="$object" --force
+        # fi
     done
 
     # Iterate through each file in the directory and upload to bucket
