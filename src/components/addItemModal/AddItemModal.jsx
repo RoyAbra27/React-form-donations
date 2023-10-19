@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 // eslint-disable-next-line react/prop-types
 import Modal from 'react-modal';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import './add-item-modal.css';
 
 const AddItemModal = ({
@@ -12,14 +12,28 @@ const AddItemModal = ({
   isModalOpen,
   onRequestClose,
   itemToEdit,
+  setItemToEdit,
 }) => {
-  const [selectedItem, setSelectedItem] = useState(
-    itemToEdit ? itemToEdit : null
-  );
+  const [selectedItem, setSelectedItem] = useState(null);
   const [inputQuantity, setInputQuantity] = useState(1);
 
+  useEffect(() => {
+    if (itemToEdit) {
+      setSelectedItem(itemToEdit);
+      setInputQuantity(itemToEdit.quantity);
+    }
+  }, [itemToEdit]);
+
+  const closeModal = () => {
+    setInputQuantity(1);
+    setSelectedItem(null);
+    setItemToEdit(null);
+    onRequestClose();
+  };
+
   const handleOnChange = (itemName) => {
-    const item = availableItems.find((i) => i.name === itemName);
+    setInputQuantity(1);
+    const item = availableItems.find((i) => i.name === itemName) || itemToEdit;
     setSelectedItem({ ...item, quantity: 1 });
   };
 
@@ -29,18 +43,19 @@ const AddItemModal = ({
       quantity: inputQuantity <= 0 ? 1 : inputQuantity,
     };
     itemToEdit ? onEditItem(finalItem) : onAddItem(finalItem);
+    setInputQuantity(1);
+    setSelectedItem(null);
     onRequestClose();
   };
 
   const updateQuantity = (quanity) => {
     setInputQuantity(quanity);
   };
-
   return (
     <Modal
       isOpen={isModalOpen}
       ariaHideApp={false}
-      onRequestClose={onRequestClose}
+      onRequestClose={closeModal}
       overlayClassName='modal-overlay'
       className='modal-container'
     >

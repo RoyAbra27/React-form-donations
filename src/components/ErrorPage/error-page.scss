@@ -22,9 +22,11 @@
     height: 15em;
     width: 15em;
     .content {
+      padding: 1em;
       display: flex;
       gap: 2em;
       flex-direction: column;
+      align-items: center;
       .title {
         text-align: center;
         font-size: 1.5em;

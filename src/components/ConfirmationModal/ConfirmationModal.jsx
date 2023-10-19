@@ -13,12 +13,13 @@ const ConfirmationModal = ({ isModalOpen, onRequestClose, onCancelForm }) => {
     >
       <div className='modal-content'>
         <div className='title'>אישור ביטול בקשה</div>
+        <div className='text'>האם אתם בטוחים שברצונכם לבטל את הבקשה?</div>
         <div className='buttons'>
-          <button className='submit-button' onClick={onCancelForm}>
-            בטל
-          </button>
           <button className='cancel-button' onClick={onRequestClose}>
             חזור
+          </button>
+          <button className='submit-button' onClick={onCancelForm}>
+            בטל
           </button>
         </div>
       </div>

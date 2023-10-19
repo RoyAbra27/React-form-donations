@@ -145,9 +145,7 @@ const Form = ({ updateForm }) => {
             return;
           }
           toast.success('הבקשה שלך בוטלה בהצלה!');
-          reset(defaultValues);
 
-          navigate('/', { replace: true });
           window.location.reload(false);
         })
       )
@@ -209,7 +207,7 @@ const Form = ({ updateForm }) => {
     } else {
       setItemToEdit(null);
     }
-    setModalToOpen('items');
+    return setModalToOpen('items');
   };
 
   const onAddItem = (newItem) => {
@@ -217,6 +215,7 @@ const Form = ({ updateForm }) => {
       availableItems.filter((i) => i.product_number !== newItem.product_number)
     );
     setSelectedItems((currnet) => [...currnet, newItem]);
+    setItemToEdit(null);
   };
 
   const onEditItem = (updatedItem) => {
@@ -448,6 +447,7 @@ const Form = ({ updateForm }) => {
         onEditItem={onEditItem}
         availableItems={availableItems}
         itemToEdit={itemToEdit}
+        setItemToEdit={setItemToEdit}
       />
     </div>
   );
