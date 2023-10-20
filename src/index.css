@@ -12,6 +12,7 @@
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
   direction: rtl;
+  --toastify-toast-min-height: 6em;
 }
 body {
   padding: 0;
@@ -38,6 +39,7 @@ button:hover,
 select:hover {
   cursor: pointer;
 }
+
 /* a {
   font-weight: 500;
   color: #646cff;
